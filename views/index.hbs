@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <style type="text/css">
+      body {
+        background: #000;
+        color: white;
+      }
+      div.container {
+        max-width: 500px;
+        margin: 100px auto;
+        border: 20px solid white;
+        padding: 10px;
+        text-align: center;
+      }
+      img { max-width: 100%; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Gif Surprise!!!!</h2>
+      <h3>{{ message }}</h3>
+      <img src="{{ imageUrl }}" />
+	  <hr />
+
+<form method="post" action="/add-gif">
+  <label for="url">New Image URL:</label><input type="text" name="url" id="url" required />
+  <input type="submit" value="Add Image" />
+</form>
+    </div>
+  </body>
+</html>
