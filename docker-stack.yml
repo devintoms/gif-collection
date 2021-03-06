@@ -1,0 +1,23 @@
+volumes:
+ gif-db:
+version: "3.8"
+services:
+    app:
+        image: dtoms/gif-collection
+        #working_dir: /usr/local/app
+        ports:
+            - 3000:3000
+        links:
+            - "db:mongo"
+    db:
+        image: mongo:4.4
+
+        volumes:
+            - gif-db:/data/db
+            
+    dbui:
+        image: mongo-express
+        ports:
+            - "8080:8081"
+        environment:
+            - ME_CONFIG_MONGODB_SERVER=db
