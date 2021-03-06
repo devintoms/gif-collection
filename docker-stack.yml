@@ -3,13 +3,11 @@ volumes:
 version: "3.8"
 services:
     app:
-        image: dtoms/gif-collection
-        #working_dir: /usr/local/app
+        image: dtoms/gif-collection:latest
+        working_dir: /usr/local/app
         ports:
             - 3000:3000
-        links:
-            - "db:mongo"
-    db:
+    mongo:
         image: mongo:4.4
 
         volumes:
