@@ -1,5 +1,19 @@
+
+
 // This line should already exist, but included to help with the context of where to add the code
 const express = require("express");
+
+// Initialize metric variables for Prometheus
+const prometheusClient = require("prom-client");
+const prometheusMiddleware = require("express-prometheus-middleware");
+const gifsAddedCounter = new prometheusClient.Counter({
+    name: "app_gifs_added_total",
+    help: "The total number of GIFs that have been added to the database",
+});
+const mongoQuerySummary = new prometheusClient.Summary({
+    name: "app_mongo_query_time",
+    help: "Query times to get the next Mongo image",
+});
 
 const MongoClient = require("mongodb").MongoClient;
 const MONGO_URL = "mongodb://mongo:27017";
@@ -25,11 +39,16 @@ MongoClient.connect(MONGO_URL, (err, db) => {
   app.use(express.urlencoded({
     extended: true
   }));
+  
+  app.use(prometheusMiddleware());
 
   // Add a handler for requests to "/". Simply picks a random image and renders the template.
   app.get("/", async (req, res) => {
+  const endTimer = mongoQuerySummary.startTimer();
   const cursor = gifCollection.aggregate([{ $sample: { size : 1 }}]);
   const data = await cursor.next();
+  endTimer();
+  
   const imageUrl = (data) ? data.url : "https://media.giphy.com/media/14uQ3cOFteDaU/giphy.gif";
   res.render("index", { imageUrl, message: MY_MESSAGE });
   });
@@ -37,6 +56,7 @@ MongoClient.connect(MONGO_URL, (err, db) => {
   app.post("/add-gif", async (req, res) => {
   const newDocument = { url : req.body.url, default: false };
   await gifCollection.insertOne(newDocument);
+  gifsAddedCounter.inc();
   res.redirect("/");
   });
 

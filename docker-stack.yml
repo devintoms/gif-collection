@@ -7,6 +7,15 @@ services:
         working_dir: /usr/local/app
         ports:
             - 3000:3000
+        deploy:
+            replicas: 3
+            placement:
+                constraints:
+                    - "node.role==worker"
+        update_config:
+            parallelism: 1
+            delay: 10s
+            order: start-first
     mongo:
         image: mongo:4.4
 
