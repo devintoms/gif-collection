@@ -4,8 +4,10 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "express-prometheus-middleware": "^1.1.0",
     "hbs": "^4.1.1",
-    "mongodb": "^3.6.4"
+    "mongodb": "^3.6.4",
+    "prom-client": "^12.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
