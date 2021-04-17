@@ -7,6 +7,11 @@ services:
         working_dir: /usr/local/app
         volumes:
             - ./:/usr/local/app
+            - ./mongo-config-sample.json:/run/secrets/mongo-config.json
+            - ./mongo-config-sample.json:/sample/location/mongo-config.json
+        environment:
+            CUSTOM_MESSAGE: This is my custom message!
+            MONGO_CONFIG_FILE: /sample/location/mongo-config.json
         ports:
             - 3000:3000
         links:
