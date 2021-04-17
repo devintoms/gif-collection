@@ -14,15 +14,21 @@ const mongoQuerySummary = new prometheusClient.Summary({
     name: "app_mongo_query_time",
     help: "Query times to get the next Mongo image",
 });
+const fs = require("fs");
 
 const MongoClient = require("mongodb").MongoClient;
-const MONGO_URL = "mongodb://mongo:27017";
+function getConnectionString() {
+  const configLocation = process.env.MONGO_CONFIG_FILE || "/run/secrets/mongo-config.json";
+  if (!fs.existsSync("/run/secrets/mongo-config.json"))
+    throw new Error("No secret config found");
+  return require("/run/secrets/mongo-config.json").connectionString;
+}
 
 // Change this to your own greeting
-const MY_MESSAGE = "Hello there visitor, this GIF is for you! Test";
+const MY_MESSAGE = process.env.CUSTOM_MESSAGE ;
 
 
-MongoClient.connect(MONGO_URL, (err, db) => {
+MongoClient.connect(getConnectionString(), (err, db) => {
   if (err) throw err;
 
   console.log("Database has connected!");
